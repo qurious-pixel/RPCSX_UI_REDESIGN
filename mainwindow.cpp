@@ -14,6 +14,7 @@
 #include <QDesktopServices>
 #include <QProcess>
 #include <QMessageBox>
+#include <QXmlStreamReader>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -29,6 +30,54 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+/*
+void parseHtmlFile(QTextStream &out, const QString &fileName)
+{
+
+    const QStringList filter = { QStringLiteral("pronunciation.xml") };
+    const QStringList htmlFiles = QDir(QStringLiteral(":/")).entryList(filter, QDir::Files);
+    QTextStream out(stdout);
+    QFile file(fileName);
+
+    if (!file.open(QIODevice::ReadOnly)) {
+        out << "  Couldn't open the file." << Qt::endl << Qt::endl << Qt::endl;
+        return;
+    }
+
+    QXmlStreamReader reader(&file);
+
+    QStringList links;
+    QString title;
+    while (!reader.atEnd()) {
+        reader.readNext();
+        if (reader.isStartElement()) {
+            if (reader.name() == QLatin1String("text"))
+                title = reader.readElementText();
+        }
+    }
+
+    if (reader.hasError()) {
+        out << "  The HTML file isn't well-formed: " << reader.errorString()
+            << Qt::endl << Qt::endl << Qt::endl;
+        return;
+    }
+
+    //QTextStream gameTitle = QString(out << "  Title: \"" << title << '"' << Qt::endl);
+    out << gameTitle << Qt::endl);
+
+    while (links.size() > 5)
+        links.removeLast();
+
+    for (const QString &link : qAsConst(links))
+        out << "    " << link << Qt::endl;
+    out << Qt::endl << Qt::endl;
+
+	// parse each html file and write the result to file/stream
+	for (const QString &file : htmlFiles)
+    	parseHtmlFile(out, QStringLiteral(":/") + file);
+}
+*/
+        		
 void MainWindow::LoadSettings()
 {
     // Clear all frames and their children
@@ -96,7 +145,23 @@ void MainWindow::LoadSettings()
             imagePixmap = imagePixmap.scaled(QSize(100, 100), Qt::KeepAspectRatio);
             imageLabel->setPixmap(imagePixmap);
 
-            QLabel *gameNameLabel = new QLabel(directoryName, frame); // "Game Name Here", 
+			// Get Game Name
+			QFile file(gamesDirectory + "/" + directoryName + "/" + "sce_sys/pronunciation.xml");
+    		if (!file.open(QIODevice::ReadOnly)) {
+        		qWarning() << "Failed to open file for reading";
+    		}
+			
+			QXmlStreamReader reader(&file);
+			QString gameTitle;
+			while (!reader.atEnd()) {
+        		reader.readNext();
+        		if (reader.isStartElement()) {
+            		if (reader.name() == QLatin1String("text"))
+                		gameTitle = reader.readElementText();
+        		}
+    		}
+
+            QLabel *gameNameLabel = new QLabel(gameTitle, frame); // "Game Name Here", 
 
             QPushButton *button1 = new QPushButton("View Game Files", frame);
             QPushButton *button2 = new QPushButton("Game Settings", frame);
@@ -303,3 +368,4 @@ void MainWindow::on_actionReset_Settings_triggered()
 
     }
 }
+
