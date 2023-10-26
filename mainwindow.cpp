@@ -42,8 +42,8 @@ void MainWindow::LoadSettings()
         delete layout;
     }
 
-    QSettings setting("RPSCX_UI", "RPSCX_UI_SETTINGS");
-    setting.beginGroup("RPSCX_UI_SETTINGS");
+    QSettings setting("rpcsx", "rpcsx_ui_settings");
+    setting.beginGroup("rpcsx_ui_settings");
     QString gamesDirectory = setting.value("GamesDirectory").toString();
     setting.setValue("ChosenGame", "");
     setting.endGroup();
@@ -96,9 +96,9 @@ void MainWindow::LoadSettings()
             imagePixmap = imagePixmap.scaled(QSize(100, 100), Qt::KeepAspectRatio);
             imageLabel->setPixmap(imagePixmap);
 
-            QLabel *gameNameLabel = new QLabel("Game Name Here", frame);
+            QLabel *gameNameLabel = new QLabel(frame); // "Game Name Here", 
 
-            QPushButton *button1 = new QPushButton(frame);
+            QPushButton *button1 = new QPushButton("View Game Files", frame);
             QPushButton *button2 = new QPushButton("Game Settings", frame);
 
             // Use CSS to set the background image for button1
@@ -126,15 +126,15 @@ void MainWindow::LoadSettings()
     }
 
     int totalGames = directoryList.count();
-    QString actionText = QString("RPSCX - %1 Games - Firmware 9.00").arg(totalGames);
+    QString actionText = QString("RPCSX - %1 Games - Firmware 9.00").arg(totalGames);
     ui->actionAV_GC_FV->setText(actionText);
 }
 
 
 void MainWindow::SaveSettings()
 {
-    QSettings setting("RPSCX_UI", "RPSCX_UI_SETTINGS");
-    setting.beginGroup("RPSCX_UI_SETTINGS");
+    QSettings setting("rpcsx", "rpcsx_ui_settings");
+    setting.beginGroup("rpcsx_ui_settings");
     setting.setValue("FirmwareDirectory", "This is the folder test");
     setting.endGroup();
 }
@@ -142,8 +142,8 @@ void MainWindow::SaveSettings()
 void MainWindow::on_actionAdd_Games_triggered()
 {
     QString gamesDirectory = QFileDialog::getExistingDirectory(this, "Select Games Folder");
-    QSettings setting("RPSCX_UI", "RPSCX_UI_SETTINGS");
-    setting.beginGroup("RPSCX_UI_SETTINGS");
+    QSettings setting("rpcsx", "rpcsx_ui_settings");
+    setting.beginGroup("rpcsx_ui_settings");
     setting.setValue("GamesDirectory", gamesDirectory);
     setting.endGroup();
 
@@ -164,16 +164,16 @@ void MainWindow::on_actionExit_triggered()
 void MainWindow::on_actionInstall_Firmware_triggered()
 {
     QString firmwareDirectory = QFileDialog::getExistingDirectory(this,"Select Firmware Folder");
-    QSettings setting("RPSCX_UI", "RPSCX_UI_SETTINGS");
-    setting.beginGroup("RPSCX_UI_SETTINGS");
+    QSettings setting("rpcsx", "rpcsx_ui_settings");
+    setting.beginGroup("rpcsx_ui_settings");
     setting.setValue("FirmwareDirectory", firmwareDirectory);
     setting.endGroup();
 }
 
 void MainWindow::on_actionBoot_Game_triggered()
 {
-    QSettings settings("RPSCX_UI", "RPSCX_UI_SETTINGS");
-    settings.beginGroup("RPSCX_UI_SETTINGS");
+    QSettings settings("rpcsx", "rpcsx_ui_settings");
+    settings.beginGroup("rpcsx_ui_settings");
 
     QString firmwareDirectory = settings.value("FirmwareDirectory").toString();
     QString chosenGame = settings.value("ChosenGame").toString();
@@ -227,8 +227,8 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 
 void MainWindow::onFrameClicked(const QString &directoryName)
 {
-    QSettings setting("RPSCX_UI", "RPSCX_UI_SETTINGS");
-    setting.beginGroup("RPSCX_UI_SETTINGS");
+    QSettings setting("rpcsx", "rpcsx_ui_settings");
+    setting.beginGroup("rpcsx_ui_settings");
     QString gamesDirectory = setting.value("GamesDirectory").toString();
 
     if (setting.value("ChosenGame").toString() == (gamesDirectory + "/" + directoryName)) {
@@ -296,13 +296,10 @@ void MainWindow::on_actionReset_Settings_triggered()
             delete child;
         }
 
-        QSettings settings("RPSCX_UI", "RPSCX_UI_SETTINGS");
+        QSettings settings("rpcsx", "rpcsx_ui_settings");
         settings.clear();
 
     } else {
 
     }
 }
-
-
-
