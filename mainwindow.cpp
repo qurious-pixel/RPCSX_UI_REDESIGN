@@ -96,7 +96,7 @@ void MainWindow::LoadSettings()
             imagePixmap = imagePixmap.scaled(QSize(100, 100), Qt::KeepAspectRatio);
             imageLabel->setPixmap(imagePixmap);
 
-            QLabel *gameNameLabel = new QLabel(frame); // "Game Name Here", 
+            QLabel *gameNameLabel = new QLabel(directoryName, frame); // "Game Name Here", 
 
             QPushButton *button1 = new QPushButton("View Game Files", frame);
             QPushButton *button2 = new QPushButton("Game Settings", frame);
