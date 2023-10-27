@@ -120,8 +120,8 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset>
-     <normaloff>Icons/play.png</normaloff>Icons/play.png</iconset>
+    <iconset resource="resources.qrc">
+     <normaloff>:/Icons/play.png</normaloff>:/Icons/play.png</iconset>
    </property>
    <property name="text">
     <string>Boot Game</string>
@@ -129,8 +129,8 @@
   </action>
   <action name="actionAdd_Games">
    <property name="icon">
-    <iconset>
-     <normaloff>Icons/open.png</normaloff>Icons/open.png</iconset>
+    <iconset resource="resources.qrc">
+     <normaloff>:/Icons/open.png</normaloff>:/Icons/open.png</iconset>
    </property>
    <property name="text">
     <string>Add Games</string>
@@ -138,8 +138,8 @@
   </action>
   <action name="actionInstall_Firmware">
    <property name="icon">
-    <iconset>
-     <normaloff>Icons/list.png</normaloff>Icons/list.png</iconset>
+    <iconset resource="resources.qrc">
+     <normaloff>:/Icons/list.png</normaloff>:/Icons/list.png</iconset>
    </property>
    <property name="text">
     <string>Install Firmware</string>
@@ -147,8 +147,8 @@
   </action>
   <action name="actionExit">
    <property name="icon">
-    <iconset>
-     <normaloff>Icons/stop.png</normaloff>Icons/stop.png</iconset>
+    <iconset resource="resources.qrc">
+     <normaloff>:/Icons/stop.png</normaloff>:/Icons/stop.png</iconset>
    </property>
    <property name="text">
     <string>Exit</string>
@@ -164,8 +164,8 @@
   </action>
   <action name="actionReset_Settings">
    <property name="icon">
-    <iconset>
-     <normaloff>Icons/refresh.png</normaloff>Icons/refresh.png</iconset>
+    <iconset resource="resources.qrc">
+     <normaloff>:/Icons/refresh.png</normaloff>:/Icons/refresh.png</iconset>
    </property>
    <property name="text">
     <string>Reset Settings</string>
@@ -173,11 +173,7 @@
   </action>
  </widget>
  <resources>
+  <include location="resources.qrc"/>
  </resources>
- <connections/>
-</ui>
-
- </widget>
- <resources/>
  <connections/>
 </ui>
