@@ -14,6 +14,7 @@
 #include <QDesktopServices>
 #include <QProcess>
 #include <QMessageBox>
+#include <QPixmap>
 #include <QXmlStreamReader>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -29,54 +30,6 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
-
-/*
-void parseHtmlFile(QTextStream &out, const QString &fileName)
-{
-
-    const QStringList filter = { QStringLiteral("pronunciation.xml") };
-    const QStringList htmlFiles = QDir(QStringLiteral(":/")).entryList(filter, QDir::Files);
-    QTextStream out(stdout);
-    QFile file(fileName);
-
-    if (!file.open(QIODevice::ReadOnly)) {
-        out << "  Couldn't open the file." << Qt::endl << Qt::endl << Qt::endl;
-        return;
-    }
-
-    QXmlStreamReader reader(&file);
-
-    QStringList links;
-    QString title;
-    while (!reader.atEnd()) {
-        reader.readNext();
-        if (reader.isStartElement()) {
-            if (reader.name() == QLatin1String("text"))
-                title = reader.readElementText();
-        }
-    }
-
-    if (reader.hasError()) {
-        out << "  The HTML file isn't well-formed: " << reader.errorString()
-            << Qt::endl << Qt::endl << Qt::endl;
-        return;
-    }
-
-    //QTextStream gameTitle = QString(out << "  Title: \"" << title << '"' << Qt::endl);
-    out << gameTitle << Qt::endl);
-
-    while (links.size() > 5)
-        links.removeLast();
-
-    for (const QString &link : qAsConst(links))
-        out << "    " << link << Qt::endl;
-    out << Qt::endl << Qt::endl;
-
-	// parse each html file and write the result to file/stream
-	for (const QString &file : htmlFiles)
-    	parseHtmlFile(out, QStringLiteral(":/") + file);
-}
-*/
         		
 void MainWindow::LoadSettings()
 {
@@ -162,13 +115,19 @@ void MainWindow::LoadSettings()
     		}
 
             QLabel *gameNameLabel = new QLabel(gameTitle, frame); // "Game Name Here", 
-
+            
+            QFont f = gameNameLabel->font();
+			f.setPixelSize(20);
+			f.setPointSize(20);
+			f.setBold(false);
+			gameNameLabel->setFont(f);
+		
             QPushButton *button1 = new QPushButton("View Game Files", frame);
             QPushButton *button2 = new QPushButton("Game Settings", frame);
 
             // Use CSS to set the background image for button1
             button1->setStyleSheet("QPushButton {"
-                                   "background-image: url(/home/kevin/Downloads/100-Number-Transparent-Images-PNG.png);"
+                                   "background-image: url();"
                                    "background-repeat: no-repeat;"
                                    "background-position: center;"
                                    "}");
@@ -243,7 +202,7 @@ void MainWindow::on_actionBoot_Game_triggered()
     QString firmwareDirectory = settings.value("FirmwareDirectory").toString();
     QString chosenGame = settings.value("ChosenGame").toString();
 
-    QString command = QString("rm -f /dev/shm/rpcsx-* && mangohud /home/""/Desktop/rpcsx/build/bin/rpcsx-os --mount %1 /system --mount %2 /app0 /app0/eboot.bin").arg(firmwareDirectory, chosenGame);
+    QString command = QString("rm -f /dev/shm/rpcsx-* && mangohud $APPDIR/usr/bin/rpcsx-os --mount %1 /system --mount %2 /app0 /app0/eboot.bin").arg(firmwareDirectory, chosenGame);
 
     qDebug() << "Command to be executed:" << command;
 
