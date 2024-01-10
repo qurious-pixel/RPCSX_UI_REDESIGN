@@ -10,10 +10,12 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    param_sfo.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    param_sfo.h
 
 FORMS += \
     mainwindow.ui
