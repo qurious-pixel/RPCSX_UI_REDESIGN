@@ -1,5 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "param_sfo.cpp"
+
+#include <iostream>
+#include <regex>
+#include <sstream>
+
 #include <QMessageBox>
 #include <QApplication>
 #include <QFileDialog>
@@ -98,29 +104,69 @@ void MainWindow::LoadSettings()
             imagePixmap = imagePixmap.scaled(QSize(100, 100), Qt::KeepAspectRatio);
             imageLabel->setPixmap(imagePixmap);
 
-			// Get Game Name
-			QFile file(gamesDirectory + "/" + directoryName + "/" + "sce_sys/pronunciation.xml");
-    		if (!file.open(QIODevice::ReadOnly)) {
-        		qWarning() << "Failed to open file for reading";
-    		}
+    	    if (QFile::exists(gamesDirectory + "/" + directoryName + "/" + "sce_sys/param.sfo")) {
+		QFile file(gamesDirectory + "/" + directoryName + "/" + "sce_sys/param.sfo");
+		if (!file.open(QIODevice::ReadOnly)) {
+				qWarning() << "Failed to open file for reading";
+		}
+		QString qstr = file.fileName();
+		std::string sfo_path = qstr.toStdString();
+		param_sfo::param_sfo_file sfo(sfo_path);
+  				
+		std::ostringstream oss;
+		std::streambuf* coutBuffer = std::cout.rdbuf(); // Save cout buffer
+		std::cout.rdbuf(oss.rdbuf()); // Redirect cout to oss
+		sfo.print(std::cout);
+		std::cout.rdbuf(coutBuffer); // Restore cout buffer
+		std::string input = oss.str(); // Get the string from oss
+		
+		std::smatch match;
+		std::regex pattern("TITLE\n(.*)");  // Match pattern
+		std::regex_search(input, match, pattern);
+		std::string final (match[1]);
+		
+		std::string gameTitleMatch = final;
+			if (gameTitleMatch.empty()) {
+				std::string final = "unknown";
+			}
+		QString gameTitle = QString::fromStdString(final);
+	
+		qDebug() << "Games found:" << gameTitle ;
+	
+            	QLabel *gameNameLabel = new QLabel(gameTitle, frame); // "Game Name Here", 
+            	
+            	QFont f = gameNameLabel->font();
+		f.setPixelSize(20);
+		f.setPointSize(20);
+		f.setBold(false);
+		gameNameLabel->setFont(f);
+		frameLayout->addWidget(imageLabel);
+		frameLayout->addWidget(gameNameLabel);
+		
+	      } else {
+		QFile file(gamesDirectory + "/" + directoryName + "/" + "sce_sys/pronunciation.xml");
+		if (!file.open(QIODevice::ReadOnly)) {
+			qWarning() << "Failed to open file for reading";
+		}
 			
-			QXmlStreamReader reader(&file);
-			QString gameTitle;
-			while (!reader.atEnd()) {
-        		reader.readNext();
-        		if (reader.isStartElement()) {
-            		if (reader.name() == QLatin1String("text"))
-                		gameTitle = reader.readElementText();
-        		}
-    		}
-
-            QLabel *gameNameLabel = new QLabel(gameTitle, frame); // "Game Name Here", 
-            
-            QFont f = gameNameLabel->font();
-			f.setPixelSize(20);
-			f.setPointSize(20);
-			f.setBold(false);
-			gameNameLabel->setFont(f);
+		QXmlStreamReader reader(&file);
+		QString gameTitle;
+		while (!reader.atEnd()) {
+		reader.readNext();
+		if (reader.isStartElement()) {
+			if (reader.name() == QLatin1String("text"))
+				gameTitle = reader.readElementText();
+			}
+		}    
+		QLabel *gameNameLabel = new QLabel(gameTitle, frame);
+		QFont f = gameNameLabel->font();
+		f.setPixelSize(20);
+		f.setPointSize(20);
+		f.setBold(false);
+		gameNameLabel->setFont(f);
+		frameLayout->addWidget(imageLabel);
+		frameLayout->addWidget(gameNameLabel);
+	      }	
 		
             QPushButton *button1 = new QPushButton("View Game Files", frame);
             QPushButton *button2 = new QPushButton("Game Settings", frame);
@@ -140,8 +186,6 @@ void MainWindow::LoadSettings()
                 QDesktopServices::openUrl(QUrl::fromLocalFile(gameFolderPath));
             });
 
-            frameLayout->addWidget(imageLabel);
-            frameLayout->addWidget(gameNameLabel);
             frameLayout->addWidget(button1);
             frameLayout->addWidget(button2);
 
@@ -202,7 +246,7 @@ void MainWindow::on_actionBoot_Game_triggered()
     QString firmwareDirectory = settings.value("FirmwareDirectory").toString();
     QString chosenGame = settings.value("ChosenGame").toString();
 
-    QString command = QString("rm -f /dev/shm/rpcsx-* && mangohud $APPDIR/usr/bin/rpcsx-os --mount %1 /system --mount %2 /app0 /app0/eboot.bin").arg(firmwareDirectory, chosenGame);
+    QString command = QString("rm -f /dev/shm/rpcsx-* && ./mangohud ./rpcsx-os --mount %1 /system --mount %2 /app0 /app0/eboot.bin").arg(firmwareDirectory, chosenGame);
 
     qDebug() << "Command to be executed:" << command;
 
@@ -327,4 +371,3 @@ void MainWindow::on_actionReset_Settings_triggered()
 
     }
 }
-
