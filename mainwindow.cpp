@@ -246,7 +246,7 @@ void MainWindow::on_actionBoot_Game_triggered()
     QString firmwareDirectory = settings.value("FirmwareDirectory").toString();
     QString chosenGame = settings.value("ChosenGame").toString();
 
-    QString command = QString("rm -f /dev/shm/rpcsx-* && ./mangohud ./rpcsx-os --mount %1 /system --mount %2 /app0 /app0/eboot.bin").arg(firmwareDirectory, chosenGame);
+    QString command = QString("rm -f /dev/shm/rpcsx-* && ./rpcsx-os --mount %1 /system --mount %2 /app0 /app0/eboot.bin").arg(firmwareDirectory, chosenGame);
 
     qDebug() << "Command to be executed:" << command;
 
