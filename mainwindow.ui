@@ -28,6 +28,10 @@
   <property name="windowTitle">
    <string>RPCSX</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>Icons/rpcsx.png</normaloff>Icons/rpcsx.png</iconset>
+  </property>
   <property name="layoutDirection">
    <enum>Qt::LeftToRight</enum>
   </property>
@@ -61,6 +65,10 @@
    <property name="windowTitle">
     <string>toolBar</string>
    </property>
+   <property name="windowIcon">
+    <iconset>
+     <normaloff>Icons/rpcsx.png</normaloff>Icons/rpcsx.png</iconset>
+   </property>
    <property name="layoutDirection">
     <enum>Qt::LeftToRight</enum>
    </property>
@@ -86,6 +94,7 @@
    <addaction name="actionAdd_Games"/>
    <addaction name="actionInstall_Firmware"/>
    <addaction name="actionReset_Settings"/>
+   <addaction name="actionSet_FPS"/>
    <addaction name="actionExit"/>
   </widget>
   <widget class="QToolBar" name="toolBar_2">
@@ -171,9 +180,36 @@
     <string>Reset Settings</string>
    </property>
   </action>
+  <action name="actionSet_FPS">
+   <property name="icon">
+    <iconset>
+     <normaloff>Icons/fps.png</normaloff>Icons/fps.png</iconset>
+   </property>
+   <property name="text">
+    <string>Set FPS</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="resources.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>actionSet_FPS</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>529</x>
+     <y>308</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
+
