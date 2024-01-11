@@ -25,6 +25,7 @@ private slots:
     void on_actionBoot_Game_triggered();
     void onFrameClicked(const QString &directoryName);
     void on_actionReset_Settings_triggered();
+    void on_actionSet_FPS_triggered();
 
 private:
     Ui::MainWindow *ui;
