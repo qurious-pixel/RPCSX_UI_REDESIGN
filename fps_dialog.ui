@@ -33,7 +33,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>Icons/rpcsx.png</normaloff>Icons/rpcsx.png</iconset>
+    <normaloff>:/Icons/rpcsx.png</normaloff>:/Icons/rpcsx.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="0">
@@ -179,7 +179,7 @@
        <string/>
       </property>
       <property name="pixmap">
-       <pixmap>Icons/overlay.png</pixmap>
+       <pixmap>:/Icons/overlay.png</pixmap>
       </property>
      </widget>
      <widget class="QLabel" name="settings">
