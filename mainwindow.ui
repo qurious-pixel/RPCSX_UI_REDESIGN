@@ -30,7 +30,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>Icons/rpcsx.png</normaloff>Icons/rpcsx.png</iconset>
+    <normaloff>:/Icons/rpcsx.png</normaloff>:/Icons/rpcsx.png</iconset>
   </property>
   <property name="layoutDirection">
    <enum>Qt::LeftToRight</enum>
