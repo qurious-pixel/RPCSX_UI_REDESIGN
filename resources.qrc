@@ -12,6 +12,9 @@
         <file>Icons/refresh.png</file>
         <file>Icons/exit_fullscreen.png</file>
         <file>Icons/open.png</file>
+        <file>Icons/rpcsx.png</file>
+        <file>Icons/fps.png</file>
+        <file>Icons/overlay.png</file>
         <file>Icons/custom_config.png</file>
         <file>Icons/combo_config_bordered.png</file>
     </qresource>
