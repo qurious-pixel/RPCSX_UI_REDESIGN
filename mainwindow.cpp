@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "param_sfo.cpp"
+#include "param_sfo.h"
+#include "fps_dialog.h"
 
 #include <iostream>
 #include <regex>
@@ -22,6 +23,7 @@
 #include <QMessageBox>
 #include <QPixmap>
 #include <QXmlStreamReader>
+#include <QDialog>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -245,8 +247,14 @@ void MainWindow::on_actionBoot_Game_triggered()
 
     QString firmwareDirectory = settings.value("FirmwareDirectory").toString();
     QString chosenGame = settings.value("ChosenGame").toString();
+    QString fpsSlider = settings.value("FPSslider").toString();
+    QString hudDisplay = settings.value("HUDdisplay").toString();
+    
 
-    QString command = QString("rm -f /dev/shm/rpcsx-* && rpcsx-os --mount %1 /system --mount %2 /app0 /app0/eboot.bin").arg(firmwareDirectory, chosenGame);
+    QString command = QString("rm -f /dev/shm/rpcsx-* && MANGOHUD=1 MANGOHUD_CONFIG=fps_limit=%3,%4 rpcsx-os --mount %1 /system --mount %2 /app0 /app0/eboot.bin").arg(firmwareDirectory, chosenGame, fpsSlider, hudDisplay);
+    
+//testing for mangohud
+    //QString command = QString("MANGOHUD=1 MANGOHUD_CONFIG=fps_limit=%1,%2 vkcube").arg(fpsSlider, hudDisplay);
 
     qDebug() << "Command to be executed:" << command;
 
@@ -370,4 +378,10 @@ void MainWindow::on_actionReset_Settings_triggered()
     } else {
 
     }
+}
+
+void MainWindow::on_actionSet_FPS_triggered()
+{
+    fps_dialog* fpsDialog = new fps_dialog(this);
+    fpsDialog->show();
 }
