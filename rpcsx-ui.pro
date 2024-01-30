@@ -10,15 +10,26 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    param_sfo.cpp \
+    fps_dialog.cpp \
+    flowlayout.cpp
 
 HEADERS += \
-    mainwindow.h
-
+    mainwindow.h \
+    param_sfo.h \
+    fps_dialog.h \
+    flowlayout.h
+	    
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    fps_dialog.ui
+    
+RESOURCES += \
+	resources.qrc
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+

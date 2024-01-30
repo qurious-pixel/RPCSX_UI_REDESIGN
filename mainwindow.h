@@ -5,6 +5,7 @@
 #include <QSettings>
 #include <QFrame>
 #include <QSignalMapper>
+#include <QToolButton>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -18,23 +19,22 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+public slots:
+	
 private slots:
     void on_actionAdd_Games_triggered();
     void on_actionExit_triggered();
     void on_actionInstall_Firmware_triggered();
     void on_actionBoot_Game_triggered();
-    void onFrameClicked(const QString &directoryName);
     void on_actionReset_Settings_triggered();
+    void on_actionSet_FPS_triggered();
 
 private:
     Ui::MainWindow *ui;
-    void SaveSettings();
     void LoadSettings();
-    void CreateNoGamesFrame();
-
-protected:
-    void resizeEvent(QResizeEvent *event) override;
-    bool eventFilter(QObject *obj, QEvent *event) override;
+	void SaveSettings();
+	void CreateNoGamesFrame();
+	void SetGameTitle(QString &gamePath, QToolButton* button);
 };
 
 #endif // MAINWINDOW_H

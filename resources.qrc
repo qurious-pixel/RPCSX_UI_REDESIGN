@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/">
+    	<file>icons/icon.png</file>
+        <file>icons/pause.png</file>
+        <file>icons/play.png</file>
+        <file>icons/restart.png</file>
+        <file>icons/stop.png</file>
+        <file>icons/configure.png</file>
+        <file>icons/controllers.png</file>
+        <file>icons/fullscreen.png</file>
+        <file>icons/grid.png</file>
+        <file>icons/list.png</file>
+        <file>icons/refresh.png</file>
+        <file>icons/exit_fullscreen.png</file>
+        <file>icons/open.png</file>
+        <file>icons/rpcsx.png</file>
+        <file>icons/fps.png</file>
+        <file>icons/overlay.png</file>
+        <file>icons/custom_config.png</file>
+        <file>icons/combo_config_bordered.png</file>
+    </qresource>
+</RCC>
