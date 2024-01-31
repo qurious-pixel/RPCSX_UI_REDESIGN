@@ -37,8 +37,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    //ui->toolBar->addSeparator();
-    //ui->toolBar->addWidget(ui->sizeSlider);
 	SaveSettings();
     LoadSettings();
 }
@@ -57,7 +55,6 @@ void MainWindow::SaveSettings()
 	if (hudDisplay.isEmpty()) {
     	
     	settings.setValue("HUDdisplay", "no_display");
-    	//settings.endGroup();
     }
     settings.endGroup();
     qDebug() << hudDisplay;
@@ -65,7 +62,7 @@ void MainWindow::SaveSettings()
    		
 void MainWindow::LoadSettings()
 {
-
+///*
     // Clear all frames and their children
     QLayout* layout = ui->scrollWidget->layout();
     if (layout) {
@@ -76,15 +73,11 @@ void MainWindow::LoadSettings()
         }
         delete layout;
     }
-    
+    //*/
 	QWidget *scrollWidget = new QWidget(ui->scrollWidget);
 	FlowLayout *flowLayout = new FlowLayout(scrollWidget);
 	ui->scrollWidget->setLayout(flowLayout);
-
-	//QSlider *slider = new QSlider(Qt::Horizontal, ui->toolBar);
-    //ui->toolBar->addSeparator();
     ui->toolBar->addWidget(ui->sizeSlider);
-
     ui->sizeSlider->setMaximumSize(200, 30);
     ui->sizeSlider->setRange(150, 500); // Set the range of the ui->sizeSlider
     ui->sizeSlider->setValue(250); // Set the initial value of the ui->sizeSlider
@@ -99,14 +92,24 @@ void MainWindow::LoadSettings()
     QStringList directoryList = folder.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
 
    	if (gamesDirectory.isEmpty()) {
-        
+
+
+    QHBoxLayout* noGamesLayout = new QHBoxLayout(ui->scrollArea);
+
+        QLabel *bigTextLabel = new QLabel("No Games Found<br>RPCSX could not find any games<br>Set a games directory to proceed.");
+        bigTextLabel->setStyleSheet("background-color: #3A3B3C; font-size: 20pt; font-weight: bold; color: black;");
+        bigTextLabel->setAlignment(Qt::AlignCenter);
+    	noGamesLayout->addWidget(bigTextLabel);
+
         //scrollWidget->resize(800, 600);
         //QPushButton button("No Games found");
-        QToolButton *button = new QToolButton;
-        button->setText("No Games Found");
+        //QPushButton *button = new QPushButton;
+        //button->setText("No Games Found");
+        //button->setFlat(true);
+        //button->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
         //QRect rec = QApplication::desktop()->availableGeometry();
         //button->setFixedSize(rec);
-        flowLayout->addWidget(button);
+        //flowLayout->addWidget(button);
     	//button.setGeometry(0, 0, scrollWidget->width(), scrollWidget->height());
         /*
         // Create a frame for "No Games Found" message
@@ -199,34 +202,14 @@ void MainWindow::LoadSettings()
         			ui->actionBoot_Game->setEnabled(true);
     			}
     			setting.endGroup();
-            });
-            
-            //QObject::connect(button, &QPushButton::clicked, DebugDirectoryName(m_directoryName), [directoryName]() {	
-            	
-            	//QToolButton m_button = button
-				//DebugDirectoryName(m_directoryName, gameTitle);
-				//QString gameTitle = m_directoryName;
-				//button->setText(gameTitle);
-				//qDebug() << gameTitle;
-			//});	
-			//button->setText(directoryName);
-    	}
-   	
-
+            });            
+    	}   	
 	}
     int totalGames = directoryList.count();
     QString actionText = QString("RPCSX - %1 Games - Firmware 9.00").arg(totalGames);
     ui->actionAV_GC_FV->setText(actionText);	
 }
-/*
-void MainWindow::SaveSettings()
-{
-    QSettings setting("rpcsx", "rpcsx_ui_settings");
-    setting.beginGroup("rpcsx_ui_settings");
-    setting.setValue("HUDdisplay", "no_display");
-    setting.endGroup();
-}
-*/
+
 void MainWindow::on_actionAdd_Games_triggered()
 {
     QString gamesDirectory = QFileDialog::getExistingDirectory(this, "Select Games Folder");
@@ -245,11 +228,8 @@ void MainWindow::on_actionAdd_Games_triggered()
         delete layout;
 
     }
-//*/	
-	    
-
+//*/		    
     LoadSettings();
-    
 }
 
 void MainWindow::on_actionExit_triggered()
