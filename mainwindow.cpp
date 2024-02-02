@@ -206,7 +206,7 @@ void MainWindow::on_actionBoot_Game_triggered()
 
     QString firmwareDirectory = settings.value("FirmwareDirectory").toString();
     QString chosenGame = settings.value("ChosenGame").toString();
-    QString fpsSlider = settings.value("FPSSlider").toString();
+    QString fpsSlider = settings.value("FPSslider").toString();
     QString hudDisplay = settings.value("HUDdisplay").toString();
     
 
