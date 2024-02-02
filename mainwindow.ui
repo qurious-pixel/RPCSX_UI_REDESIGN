@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1059</width>
-    <height>617</height>
+    <width>1507</width>
+    <height>907</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -29,7 +29,7 @@
    <string>RPCSX</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="../test9/resources.qrc">
     <normaloff>:/icons/rpcsx.png</normaloff>:/icons/rpcsx.png</iconset>
   </property>
   <property name="layoutDirection">
@@ -51,55 +51,72 @@
      <height>0</height>
     </size>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <layout class="QVBoxLayout" name="layout">
-      <item>
-       <widget class="QScrollArea" name="scrollArea">
-        <property name="widgetResizable">
-         <bool>true</bool>
-        </property>
-        <widget class="QWidget" name="scrollWidget">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>0</y>
-           <width>1037</width>
-           <height>509</height>
-          </rect>
-         </property>
-         <widget class="QSlider" name="sizeSlider">
-          <property name="geometry">
-           <rect>
-            <x>460</x>
-            <y>20</y>
-            <width>153</width>
-            <height>31</height>
-           </rect>
-          </property>
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="focusPolicy">
-           <enum>Qt::ClickFocus</enum>
-          </property>
-          <property name="autoFillBackground">
-           <bool>false</bool>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="tickPosition">
-           <enum>QSlider::NoTicks</enum>
-          </property>
-         </widget>
-        </widget>
-       </widget>
-      </item>
-     </layout>
+     <widget class="QScrollArea" name="scrollArea">
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="scrollWidget">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>1487</width>
+         <height>801</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <layout class="QHBoxLayout" name="layout">
+          <item>
+           <widget class="QStackedWidget" name="stackedWidget">
+            <property name="currentIndex">
+             <number>1</number>
+            </property>
+            <widget class="QWidget" name="gamesWindow">
+             <widget class="QSlider" name="sizeSlider">
+              <property name="geometry">
+               <rect>
+                <x>720</x>
+                <y>20</y>
+                <width>160</width>
+                <height>16</height>
+               </rect>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </widget>
+            <widget class="QWidget" name="noGamesWindow">
+             <widget class="QLabel" name="bigTextLabel">
+              <property name="geometry">
+               <rect>
+                <x>6</x>
+                <y>3</y>
+                <width>1461</width>
+                <height>781</height>
+               </rect>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">background-color: #3A3B3C; font-size: 20pt; font-weight: bold; color: black;</string>
+              </property>
+              <property name="text">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Games Found&lt;br/&gt;RPCSX could not find any games&lt;br/&gt;Set a games directory to proceed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </widget>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -117,7 +134,7 @@
     <string>toolBar</string>
    </property>
    <property name="windowIcon">
-    <iconset>
+    <iconset resource="../test9/resources.qrc">
      <normaloff>:/icons/rpcsx.png</normaloff>:/icons/rpcsx.png</iconset>
    </property>
    <property name="layoutDirection">
@@ -147,7 +164,6 @@
    <addaction name="actionReset_Settings"/>
    <addaction name="actionSet_FPS"/>
    <addaction name="actionExit"/>
-   <addaction name="separator"/>
   </widget>
   <widget class="QToolBar" name="toolBar_2">
    <property name="enabled">
@@ -181,7 +197,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="../test9/resources.qrc">
      <normaloff>:/icons/play.png</normaloff>:/icons/play.png</iconset>
    </property>
    <property name="text">
@@ -190,7 +206,7 @@
   </action>
   <action name="actionAdd_Games">
    <property name="icon">
-    <iconset>
+    <iconset resource="../test9/resources.qrc">
      <normaloff>:/icons/open.png</normaloff>:/icons/open.png</iconset>
    </property>
    <property name="text">
@@ -199,7 +215,7 @@
   </action>
   <action name="actionInstall_Firmware">
    <property name="icon">
-    <iconset>
+    <iconset resource="../test9/resources.qrc">
      <normaloff>:/icons/list.png</normaloff>:/icons/list.png</iconset>
    </property>
    <property name="text">
@@ -208,7 +224,7 @@
   </action>
   <action name="actionExit">
    <property name="icon">
-    <iconset>
+    <iconset resource="../test9/resources.qrc">
      <normaloff>:/icons/stop.png</normaloff>:/icons/stop.png</iconset>
    </property>
    <property name="text">
@@ -225,7 +241,7 @@
   </action>
   <action name="actionReset_Settings">
    <property name="icon">
-    <iconset>
+    <iconset resource="../test9/resources.qrc">
      <normaloff>:/icons/refresh.png</normaloff>:/icons/refresh.png</iconset>
    </property>
    <property name="text">
@@ -234,7 +250,7 @@
   </action>
   <action name="actionSet_FPS">
    <property name="icon">
-    <iconset>
+    <iconset resource="../test9/resources.qrc">
      <normaloff>:/icons/fps.png</normaloff>:/icons/fps.png</iconset>
    </property>
    <property name="text">
@@ -243,7 +259,7 @@
   </action>
  </widget>
  <resources>
-  <include location="resources.qrc"/>
+  <include location="../test9/resources.qrc"/>
  </resources>
  <connections>
   <connection>
