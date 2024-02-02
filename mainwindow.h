@@ -6,6 +6,7 @@
 #include <QFrame>
 #include <QSignalMapper>
 #include <QToolButton>
+#include <QLabel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -32,9 +33,9 @@ private slots:
 private:
     Ui::MainWindow *ui;
     void LoadSettings();
-	void SaveSettings();
-	void CreateNoGamesFrame();
-	void SetGameTitle(QString &gamePath, QToolButton* button);
+    void SaveSettings();
+    void SetGameTitle(QString &gamePath, QToolButton* button);
 };
 
 #endif // MAINWINDOW_H
+
