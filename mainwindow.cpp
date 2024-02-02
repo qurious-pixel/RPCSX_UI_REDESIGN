@@ -30,6 +30,7 @@
 #include <QToolButton>
 #include <QMenu>
 #include <QUrl>
+#include <QStackedWidget>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -37,8 +38,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+ui->stackedWidget->addWidget(ui->noGamesWindow);
+ui->stackedWidget->addWidget(ui->gamesWindow);
 	SaveSettings();
-    LoadSettings();
+    
 }
 
 MainWindow::~MainWindow()
@@ -51,36 +54,34 @@ void MainWindow::SaveSettings()
     QSettings settings("rpcsx", "rpcsx_ui_settings");
     settings.beginGroup("rpcsx_ui_settings");
 	QString hudDisplay = settings.value("HUDdisplay").toString();
-	qDebug() << hudDisplay;
 	if (hudDisplay.isEmpty()) {
     	
     	settings.setValue("HUDdisplay", "no_display");
     }
+    QString iconSize = settings.value("iconSize").toString();
+	if (iconSize.isEmpty()) {
+    	
+    	settings.setValue("iconSize", 250);
+    }
     settings.endGroup();
-    qDebug() << hudDisplay;
+    LoadSettings();
 }
    		
 void MainWindow::LoadSettings()
 {
-///*
-    // Clear all frames and their children
-    QLayout* layout = ui->scrollWidget->layout();
-    if (layout) {
-        QLayoutItem *child;
-        while ((child = layout->takeAt(0)) != nullptr) {
-            delete child->widget();
-            delete child;
-        }
-        delete layout;
-    }
-    //*/
+
 	QWidget *scrollWidget = new QWidget(ui->scrollWidget);
 	FlowLayout *flowLayout = new FlowLayout(scrollWidget);
-	ui->scrollWidget->setLayout(flowLayout);
+	
+	QSettings settings("rpcsx", "rpcsx_ui_settings");
+    settings.beginGroup("rpcsx_ui_settings");
+    int iconSize = settings.value("iconSize", 256).toInt();	
+    settings.endGroup();
+	
     ui->toolBar->addWidget(ui->sizeSlider);
     ui->sizeSlider->setMaximumSize(200, 30);
     ui->sizeSlider->setRange(150, 500); // Set the range of the ui->sizeSlider
-    ui->sizeSlider->setValue(250); // Set the initial value of the ui->sizeSlider
+    ui->sizeSlider->setValue(iconSize); // Set the initial value of the ui->sizeSlider
     
     QSettings setting("rpcsx", "rpcsx_ui_settings");
     setting.beginGroup("rpcsx_ui_settings");
@@ -91,58 +92,19 @@ void MainWindow::LoadSettings()
 	QDir folder(gamesDirectory);
     QStringList directoryList = folder.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
 
+
    	if (gamesDirectory.isEmpty()) {
-
-
-    QHBoxLayout* noGamesLayout = new QHBoxLayout(ui->scrollArea);
-
-        QLabel *bigTextLabel = new QLabel("No Games Found<br>RPCSX could not find any games<br>Set a games directory to proceed.");
-        bigTextLabel->setStyleSheet("background-color: #3A3B3C; font-size: 20pt; font-weight: bold; color: black;");
-        bigTextLabel->setAlignment(Qt::AlignCenter);
-    	noGamesLayout->addWidget(bigTextLabel);
-
-        //scrollWidget->resize(800, 600);
-        //QPushButton button("No Games found");
-        //QPushButton *button = new QPushButton;
-        //button->setText("No Games Found");
-        //button->setFlat(true);
-        //button->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-        //QRect rec = QApplication::desktop()->availableGeometry();
-        //button->setFixedSize(rec);
-        //flowLayout->addWidget(button);
-    	//button.setGeometry(0, 0, scrollWidget->width(), scrollWidget->height());
-        /*
-        // Create a frame for "No Games Found" message
-        //QFrame *noGamesFrame = new QFrame(ui->centralwidget); //ui->centralwidget
-        //noGamesFrame->setFixedSize(1000, 500);
-        //noGamesFrame->setFrameShape(QFrame::NoFrame);
-        //noGamesFrame->setLineWidth(0);
-        //noGamesFrame->setObjectName("noGamesFrame");
-        //noGamesFrame->setStyleSheet("background-color: #3A3B3C;");
-
-        QVBoxLayout *noGamesLayout = new QVBoxLayout(); //noGamesFrame
-        noGamesLayout->setAlignment(Qt::AlignCenter); //
-
-        QLabel *bigTextLabel = new QLabel("No Games Found<br>RPCSX could not find any games<br>Set a games directory to proceed.", noGamesLayout);
-        bigTextLabel->setStyleSheet("font-size: 20pt; font-weight: bold; color: black;");
-        bigTextLabel->setAlignment(Qt::AlignCenter);
-
-        noGamesLayout->addWidget(bigTextLabel);
-        //flowLayout->addWidget(noGamesFrame);
-        //noGamesFrame->setLayout(noGamesLayout);
-        //setCentralWidget(noGamesFrame);
-    	*/
+    	ui->stackedWidget->addWidget(ui->noGamesWindow);
+		ui->stackedWidget->setCurrentIndex(1);
     } else {  
+		ui->gamesWindow->setLayout(flowLayout);
+		ui->stackedWidget->setCurrentIndex(0);
+    	
 		// Add buttons to the flow layout using a for each loop
     	for (qsizetype i = 0; i < directoryList.size(); ++i) {
     		QString directoryName = directoryList.at(i);
         	QPixmap pixmap(gamesDirectory + "/" + directoryName + "/" + "sce_sys/icon0.png");
         	qDebug() << directoryName;
-        
-        	QSettings settings("rpcsx", "rpcsx_ui_settings");
-    		settings.beginGroup("rpcsx_ui_settings");
-        	int iconSize = settings.value("iconSize", 256).toInt();	
-        	settings.endGroup();
 			
 			QToolButton *button = new QToolButton;
 			QString gamePath = QString (gamesDirectory + "/" + directoryName + "/");
@@ -203,8 +165,9 @@ void MainWindow::LoadSettings()
     			}
     			setting.endGroup();
             });            
-    	}   	
+    	}  	
 	}
+
     int totalGames = directoryList.count();
     QString actionText = QString("RPCSX - %1 Games - Firmware 9.00").arg(totalGames);
     ui->actionAV_GC_FV->setText(actionText);	
@@ -217,18 +180,7 @@ void MainWindow::on_actionAdd_Games_triggered()
     setting.beginGroup("rpcsx_ui_settings");
     setting.setValue("GamesDirectory", gamesDirectory);
     setting.endGroup();
-///*
-    QLayout* layout = ui->scrollWidget->layout();
-    if (layout) {
-        QLayoutItem *child;
-        while ((child = layout->takeAt(0)) != nullptr) {
-            delete child->widget();
-            delete child;
-        }
-        delete layout;
 
-    }
-//*/		    
     LoadSettings();
 }
 
@@ -284,17 +236,11 @@ void MainWindow::on_actionReset_Settings_triggered()
     reply = QMessageBox::question(this, "Reset Settings", "All settings will be wiped. Are you sure?", QMessageBox::Yes | QMessageBox::No);
 
     if (reply == QMessageBox::Yes) {
-        QLayoutItem *child;
-        while ((child = ui->scrollWidget->layout()->takeAt(0)) != nullptr) {
-            delete child->widget();
-            delete child;
-        }
         QSettings settings("rpcsx", "rpcsx_ui_settings");
         settings.clear();
-        
     } else {
-
     }
+
     SaveSettings();
 }
 
