@@ -38,8 +38,9 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-ui->stackedWidget->addWidget(ui->noGamesWindow);
-ui->stackedWidget->addWidget(ui->gamesWindow);
+	ui->stackedWidget->addWidget(ui->gamesWindow);
+	ui->stackedWidget->addWidget(ui->noGamesWindow);
+
 	SaveSettings();
     
 }
