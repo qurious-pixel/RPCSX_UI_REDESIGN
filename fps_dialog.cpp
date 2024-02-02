@@ -10,6 +10,14 @@ fps_dialog::fps_dialog(QWidget* parent) : QDialog(parent), ui(new Ui::fps_dialog
 	
 	ui->fpsSlider->setMinimum(0);
 	ui->fpsSlider->setMaximum(120);
+
+	QSettings setting("rpcsx", "rpcsx_ui_settings");
+    	setting.beginGroup("rpcsx_ui_settings");
+	QString hudDisplay = setting.value("HUDdisplay").toString();
+	if(hudDisplay == "fps") {
+		ui->hudDisplay->setChecked(true);
+	}
+	setting.endGroup();
 }
 
 fps_dialog::~fps_dialog()
