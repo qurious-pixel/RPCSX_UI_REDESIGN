@@ -3,7 +3,6 @@
 
 #include <QMainWindow>
 #include <QSettings>
-#include <QFrame>
 #include <QSignalMapper>
 #include <QToolButton>
 #include <QLabel>
