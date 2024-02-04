@@ -17,7 +17,9 @@ fps_dialog::fps_dialog(QWidget* parent) : QDialog(parent), ui(new Ui::fps_dialog
 	if(hudDisplay == "fps") {
 		ui->hudDisplay->setChecked(true);
 	}
+	int fpsSlider = setting.value("FPSslider").toInt();
 	setting.endGroup();
+	ui->fpsSlider->setValue(fpsSlider); 
 }
 
 fps_dialog::~fps_dialog()
