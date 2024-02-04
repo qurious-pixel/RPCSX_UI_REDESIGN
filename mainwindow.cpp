@@ -8,29 +8,15 @@
 #include <regex>
 #include <sstream>
 
-#include <QMessageBox>
-#include <QApplication>
 #include <QFileDialog>
-#include <QSettings>
 #include <QDebug>
-#include <QFrame>
-#include <QResizeEvent>
-#include <QDir>
-#include <QVBoxLayout>
-#include <QLabel>
 #include <QPushButton>
 #include <QDesktopServices>
 #include <QProcess>
 #include <QMessageBox>
 #include <QPixmap>
 #include <QXmlStreamReader>
-#include <QDialog>
-#include <QListWidget>
-#include <QMainWindow>
-#include <QToolButton>
 #include <QMenu>
-#include <QUrl>
-#include <QStackedWidget>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -137,14 +123,14 @@ void MainWindow::LoadSettings()
         	button->setContextMenuPolicy(Qt::CustomContextMenu);
         	flowLayout->addWidget(button);
         	
-    		QObject::connect(button, &QWidget::customContextMenuRequested, [gamesDirectory, directoryName]() {
+    		QObject::connect(button, &QWidget::customContextMenuRequested, [gamesDirectory, directoryName, button]() {
                 QMenu* contextMenu = new QMenu();
 				contextMenu->addAction("View Game Files", [gamesDirectory, directoryName](){
 				    QString gameFolderPath = gamesDirectory + "/" + directoryName;
                 	QDesktopServices::openUrl(QUrl::fromLocalFile(gameFolderPath));
 				});
 				contextMenu->addAction("Game Settings");
-				contextMenu->exec(QCursor::pos());
+				contextMenu->exec(button->mapToGlobal(QPoint(0, button->height())));
             });
             QObject::connect(button, &QPushButton::clicked, [this, gamesDirectory, directoryName]() {
                 QSettings setting("rpcsx", "rpcsx_ui_settings");
