@@ -132,7 +132,10 @@ void MainWindow::LoadSettings()
 				contextMenu->addAction("Game Settings");
 				contextMenu->exec(button->mapToGlobal(QPoint(0, button->height())));
             });
-            QObject::connect(button, &QPushButton::clicked, [this, gamesDirectory, directoryName]() {
+            QObject::connect(button, &QPushButton::clicked, [this, gamesDirectory, directoryName, button]() {
+		button->setStyleSheet("QToolButton:checked { background-color: rgb(102 ,178, 255); }");
+                QString gameName = button->text();
+                setWindowTitle(QCoreApplication::translate("MainWindow", "RPCSX -- [ %1 ]").arg(gameName));    
                 QSettings setting("rpcsx", "rpcsx_ui_settings");
 				setting.beginGroup("rpcsx_ui_settings");
     			QString gamesDirectory = setting.value("GamesDirectory").toString();
