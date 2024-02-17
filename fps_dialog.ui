@@ -59,9 +59,9 @@
      <widget class="QLabel" name="fpsName">
       <property name="geometry">
        <rect>
-        <x>310</x>
+        <x>290</x>
         <y>30</y>
-        <width>51</width>
+        <width>71</width>
         <height>31</height>
        </rect>
       </property>
@@ -78,6 +78,9 @@
       </property>
       <property name="text">
        <string>FPS</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
      <widget class="QSlider" name="fpsSlider">
@@ -133,9 +136,9 @@
      <widget class="QLabel" name="fpsCount">
       <property name="geometry">
        <rect>
-        <x>230</x>
+        <x>200</x>
         <y>280</y>
-        <width>141</width>
+        <width>171</width>
         <height>31</height>
        </rect>
       </property>
@@ -192,8 +195,8 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>20</y>
-        <width>241</width>
+        <y>30</y>
+        <width>261</width>
         <height>31</height>
        </rect>
       </property>
