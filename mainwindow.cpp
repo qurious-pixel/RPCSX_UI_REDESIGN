@@ -17,6 +17,8 @@
 #include <QPixmap>
 #include <QXmlStreamReader>
 #include <QMenu>
+#include <QPainter>
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -28,6 +30,28 @@ MainWindow::MainWindow(QWidget *parent)
 	ui->stackedWidget->addWidget(ui->noGamesWindow);
 
 	SaveSettings();
+	
+	QSettings settings("rpcsx", "rpcsx_ui_settings");
+    settings.beginGroup("rpcsx_ui_settings");
+    QString darkMode = settings.value("DarkMode").toString();
+    int windowWidth = settings.value("windowWidth").toInt();
+    int windowHeight = settings.value("windowHeight").toInt();
+    resize(windowWidth, windowHeight);
+    settings.endGroup();
+    
+    if(darkMode == "Dark") {
+    	DarkMode();
+    }
+    
+	QObject::connect(ui->modeButton, &QPushButton::clicked, [this]() {
+		QString modeName = ui->modeButton->text();
+		if(modeName == "Dark") {
+		DarkMode();
+		} else {
+		LightMode();
+		}
+
+	});
     
 }
 
@@ -69,6 +93,16 @@ void MainWindow::LoadSettings()
     ui->sizeSlider->setMaximumSize(200, 30);
     ui->sizeSlider->setRange(150, 500); // Set the range of the ui->sizeSlider
     ui->sizeSlider->setValue(iconSize); // Set the initial value of the ui->sizeSlider
+    
+    QWidget *spacer = new QWidget();
+	spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+	spacer->setStyleSheet("background-color: transparent;");
+	ui->toolBar->addWidget(spacer);
+    ui->toolBar->addWidget(ui->modeButton);
+    ui->modeButton->setFixedSize(50, 50);
+    ui->modeButton->setIconSize(QSize(50, 50));
+    ui->modeButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    ui->modeButton->setText("Dark");
     
     QSettings setting("rpcsx", "rpcsx_ui_settings");
     setting.beginGroup("rpcsx_ui_settings");
@@ -132,7 +166,8 @@ void MainWindow::LoadSettings()
 				contextMenu->addAction("Game Settings");
 				contextMenu->exec(button->mapToGlobal(QPoint(0, button->height())));
             });
-            QObject::connect(button, &QPushButton::clicked, [this, gamesDirectory, directoryName, button]() {  
+            QObject::connect(button, &QPushButton::clicked, [this, gamesDirectory, directoryName, button]() {
+
                 QSettings setting("rpcsx", "rpcsx_ui_settings");
 				setting.beginGroup("rpcsx_ui_settings");
     			QString gamesDirectory = setting.value("GamesDirectory").toString();
@@ -148,12 +183,12 @@ void MainWindow::LoadSettings()
     			if (setting.value("ChosenGame").toString() == "") {
         			ui->actionBoot_Game->setEnabled(false);
         			button->setStyleSheet("QToolButton { background-color: rgb(255 ,255, 255); }");
-                		setWindowTitle(QCoreApplication::translate("MainWindow", "RPCSX"));
+                	setWindowTitle(QCoreApplication::translate("MainWindow", "RPCSX"));
     			} else {
         			ui->actionBoot_Game->setEnabled(true);
-				button->setStyleSheet("QToolButton:checked { background-color: rgb(102 ,178, 255); }");
-		                QString gameName = button->text();
-		                setWindowTitle(QCoreApplication::translate("MainWindow", "RPCSX -- [ %1 ]").arg(gameName)); 
+        			button->setStyleSheet("QToolButton:checked { background-color: rgb(102 ,178, 255); }");
+                	QString gameName = button->text();
+                	setWindowTitle(QCoreApplication::translate("MainWindow", "RPCSX -- [ %1 ]").arg(gameName));
     			}
     			setting.endGroup();
             });            
@@ -197,12 +232,11 @@ void MainWindow::on_actionBoot_Game_triggered()
 
     QString firmwareDirectory = settings.value("FirmwareDirectory").toString();
     QString chosenGame = settings.value("ChosenGame").toString();
-    QString fpsSlider = settings.value("FPSslider").toString();
+    QString fpsSlider = settings.value("FPSSlider").toString();
     QString hudDisplay = settings.value("HUDdisplay").toString();
-    
 
     QString command = QString("rm -f /dev/shm/rpcsx-* && MANGOHUD=1 MANGOHUD_CONFIG=fps_limit=%3,%4 rpcsx-os --mount \"%1\" /system --mount \"%2\" /app0 /app0/eboot.bin").arg(firmwareDirectory, chosenGame, fpsSlider, hudDisplay);
-    
+       
     qDebug() << "Command to be executed:" << command;
 
     QProcess process;
@@ -289,3 +323,65 @@ void MainWindow::SetGameTitle(QString &gamePath, QToolButton* button)
     	button->setText(gameTitle);
     }   
 }
+
+void MainWindow::LightMode()
+{
+	qApp->setStyleSheet("");
+	ui->modeButton->setText("Dark");
+
+	QList<QAction*> actions = ui->toolBar->actions();
+	
+	foreach (QAction* action, actions) {
+    	QIcon icon = action->icon();
+    	QPixmap pixmap = icon.pixmap(QSize(32, 32)); // Adjust the size as needed
+    	action->setIcon(QIcon(pixmap));
+
+		if(!pixmap.size().isNull()) { 
+		
+    		QPainter painter(&pixmap);
+    		painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
+    		painter.fillRect(pixmap.rect(), QColor(0, 0, 0)); // Set the desired color
+		
+    		action->setIcon(QIcon(pixmap));
+    	}
+	}
+	QSettings setting("rpcsx", "rpcsx_ui_settings");
+    setting.beginGroup("rpcsx_ui_settings");
+    setting.setValue("DarkMode", "Light");
+    setting.endGroup(); 
+}
+
+void MainWindow::DarkMode()
+{
+	ui->modeButton->setText("Light");
+	QFile f(":dark/darkstyle.qss");
+	
+	if (!f.exists())   {
+    	printf("Unable to set stylesheet, file not found\n");
+	}
+	else   {
+    	f.open(QFile::ReadOnly | QFile::Text);
+    	QTextStream ts(&f);
+    	qApp->setStyleSheet(ts.readAll());
+	}
+	
+	QList<QAction*> actions = ui->toolBar->actions();
+	
+	foreach (QAction* action, actions) {
+    	QIcon icon = action->icon();
+    	QPixmap pixmap = icon.pixmap(QSize(32, 32)); // Adjust the size as needed
+	
+		if(!pixmap.size().isNull()) { 
+    		QPainter painter(&pixmap);
+    		painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
+    		painter.fillRect(pixmap.rect(), QColor(255, 255, 255)); // Set the desired color
+		
+    		action->setIcon(QIcon(pixmap));
+    	}
+	}
+	QSettings setting("rpcsx", "rpcsx_ui_settings");
+    setting.beginGroup("rpcsx_ui_settings");
+    setting.setValue("DarkMode", "Dark");
+    setting.endGroup();
+}
+
