@@ -26,7 +26,10 @@ FORMS += \
     fps_dialog.ui
     
 RESOURCES += \
-	resources.qrc
+    resources.qrc \
+    dark/darkstyle.qrc \
+    dark/darkstyle.qss
+
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
