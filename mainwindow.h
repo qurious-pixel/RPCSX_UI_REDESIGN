@@ -34,6 +34,8 @@ private:
     void LoadSettings();
     void SaveSettings();
     void SetGameTitle(QString &gamePath, QToolButton* button);
+    void LightMode();
+    void DarkMode();
 };
 
 #endif // MAINWINDOW_H
