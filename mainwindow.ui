@@ -29,7 +29,7 @@
    <string>RPCSX</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../test9/resources.qrc">
+   <iconset resource="resources.qrc">
     <normaloff>:/icons/rpcsx.png</normaloff>:/icons/rpcsx.png</iconset>
   </property>
   <property name="layoutDirection">
@@ -72,7 +72,7 @@
           <item>
            <widget class="QStackedWidget" name="stackedWidget">
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="gamesWindow">
              <widget class="QSlider" name="sizeSlider">
@@ -86,6 +86,29 @@
               </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+             <widget class="QToolButton" name="modeButton">
+              <property name="geometry">
+               <rect>
+                <x>420</x>
+                <y>30</y>
+                <width>32</width>
+                <height>31</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="../darkmode3/resources.qrc">
+                <normaloff>:/icons/bulb.png</normaloff>:/icons/bulb.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>24</width>
+                <height>24</height>
+               </size>
               </property>
              </widget>
             </widget>
@@ -145,7 +168,7 @@
     <string>toolBar</string>
    </property>
    <property name="windowIcon">
-    <iconset resource="../test9/resources.qrc">
+    <iconset resource="resources.qrc">
      <normaloff>:/icons/rpcsx.png</normaloff>:/icons/rpcsx.png</iconset>
    </property>
    <property name="layoutDirection">
@@ -208,7 +231,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="../test9/resources.qrc">
+    <iconset resource="resources.qrc">
      <normaloff>:/icons/play.png</normaloff>:/icons/play.png</iconset>
    </property>
    <property name="text">
@@ -217,7 +240,7 @@
   </action>
   <action name="actionAdd_Games">
    <property name="icon">
-    <iconset resource="../test9/resources.qrc">
+    <iconset resource="resources.qrc">
      <normaloff>:/icons/open.png</normaloff>:/icons/open.png</iconset>
    </property>
    <property name="text">
@@ -226,7 +249,7 @@
   </action>
   <action name="actionInstall_Firmware">
    <property name="icon">
-    <iconset resource="../test9/resources.qrc">
+    <iconset resource="resources.qrc">
      <normaloff>:/icons/list.png</normaloff>:/icons/list.png</iconset>
    </property>
    <property name="text">
@@ -235,7 +258,7 @@
   </action>
   <action name="actionExit">
    <property name="icon">
-    <iconset resource="../test9/resources.qrc">
+    <iconset resource="resources.qrc">
      <normaloff>:/icons/stop.png</normaloff>:/icons/stop.png</iconset>
    </property>
    <property name="text">
@@ -252,7 +275,7 @@
   </action>
   <action name="actionReset_Settings">
    <property name="icon">
-    <iconset resource="../test9/resources.qrc">
+    <iconset resource="resources.qrc">
      <normaloff>:/icons/refresh.png</normaloff>:/icons/refresh.png</iconset>
    </property>
    <property name="text">
@@ -261,7 +284,7 @@
   </action>
   <action name="actionSet_FPS">
    <property name="icon">
-    <iconset resource="../test9/resources.qrc">
+    <iconset resource="resources.qrc">
      <normaloff>:/icons/fps.png</normaloff>:/icons/fps.png</iconset>
    </property>
    <property name="text">
@@ -270,7 +293,8 @@
   </action>
  </widget>
  <resources>
-  <include location="../test9/resources.qrc"/>
+  <include location="resources.qrc"/>
+  <include location="../darkmode3/resources.qrc"/>
  </resources>
  <connections>
   <connection>
