@@ -14,6 +14,8 @@ https://github.com/zyzalfors/ParamSFOReader
 
 https://github.com/flightlessmango/MangoHud
 
+https://github.com/ColinDuquesnoy/QDarkStyleSheet
+
 ## License
 
 This launcher is released under the [MIT License](LICENSE). Please refer to the license file for more information.
