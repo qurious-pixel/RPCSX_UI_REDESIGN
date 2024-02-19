@@ -1324,6 +1324,10 @@ QComboBox::down-arrow:on, QComboBox::down-arrow:hover, QComboBox::down-arrow:foc
 https://doc.qt.io/qt-5/stylesheet-examples.html#customizing-qslider
 
 --------------------------------------------------------------------------- */
+QSlider {
+  background: #19232D;
+}
+
 QSlider:disabled {
   background: #19232D;
 }
