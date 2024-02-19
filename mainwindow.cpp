@@ -3,6 +3,7 @@
 #include "flowlayout.h"
 #include "param_sfo.h"
 #include "fps_dialog.h"
+#include "elf.h"
 
 #include <iostream>
 #include <regex>
@@ -28,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 	ui->stackedWidget->addWidget(ui->gamesWindow);
 	ui->stackedWidget->addWidget(ui->noGamesWindow);
-
+	ui->toolBar->addWidget(ui->sizeSlider);
 	SaveSettings();
 	
 	QSettings settings("rpcsx", "rpcsx_ui_settings");
@@ -50,9 +51,7 @@ MainWindow::MainWindow(QWidget *parent)
 		} else {
 		LightMode();
 		}
-
-	});
-    
+	});   
 }
 
 MainWindow::~MainWindow()
@@ -75,7 +74,7 @@ void MainWindow::SaveSettings()
     	settings.setValue("iconSize", 250);
     }
     settings.endGroup();
-    LoadSettings();
+    LoadSettings(); 
 }
    		
 void MainWindow::LoadSettings()
@@ -83,17 +82,16 @@ void MainWindow::LoadSettings()
 
 	QWidget *scrollWidget = new QWidget(ui->scrollWidget);
 	FlowLayout *flowLayout = new FlowLayout(scrollWidget);
-	
+
 	QSettings settings("rpcsx", "rpcsx_ui_settings");
     settings.beginGroup("rpcsx_ui_settings");
     int iconSize = settings.value("iconSize", 256).toInt();	
     settings.endGroup();
-	
-    ui->toolBar->addWidget(ui->sizeSlider);
+
     ui->sizeSlider->setMaximumSize(200, 30);
     ui->sizeSlider->setRange(150, 500); // Set the range of the ui->sizeSlider
     ui->sizeSlider->setValue(iconSize); // Set the initial value of the ui->sizeSlider
-    
+
     QWidget *spacer = new QWidget();
 	spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 	spacer->setStyleSheet("background-color: transparent;");
@@ -107,6 +105,7 @@ void MainWindow::LoadSettings()
     QSettings setting("rpcsx", "rpcsx_ui_settings");
     setting.beginGroup("rpcsx_ui_settings");
     QString gamesDirectory = setting.value("GamesDirectory").toString();
+    QString fwVer = setting.value("FirmwareVersion").toString();
     setting.setValue("ChosenGame", "");
     setting.endGroup();
      
@@ -196,7 +195,7 @@ void MainWindow::LoadSettings()
 	}
 
     int totalGames = directoryList.count();
-    QString actionText = QString("RPCSX - %1 Games - Firmware 9.00").arg(totalGames);
+    QString actionText = QString("RPCSX - %1 Games - Firmware %2").arg(totalGames).arg(fwVer);
     ui->actionAV_GC_FV->setText(actionText);	
 }
 
@@ -223,6 +222,61 @@ void MainWindow::on_actionInstall_Firmware_triggered()
     setting.beginGroup("rpcsx_ui_settings");
     setting.setValue("FirmwareDirectory", firmwareDirectory);
     setting.endGroup();
+    GetFirmwareVersion(firmwareDirectory);
+}
+
+void MainWindow::GetFirmwareVersion(QString &firmwareDirectory)
+{
+    if (QFile::exists(firmwareDirectory + "/common/lib/libkernel.sprx")) {
+	QFile file(firmwareDirectory + "/common/lib/libkernel.sprx");
+	if (!file.open(QIODevice::ReadOnly)) {
+			qWarning() << "Failed to get version";
+	}
+	
+	Elf64_Ehdr ehdr;
+	QDataStream in(&file);
+	in.readRawData(reinterpret_cast<char*>(&ehdr), sizeof(ehdr));
+	
+	Elf64_Phdr *phdrs = static_cast<Elf64_Phdr*>(malloc(ehdr.e_phentsize * ehdr.e_phnum));
+	file.seek(ehdr.e_phoff);
+	in.readRawData(reinterpret_cast<char*>(phdrs), ehdr.e_phentsize * ehdr.e_phnum);
+	
+	QSettings setting("rpcsx", "rpcsx_ui_settings");
+    setting.beginGroup("rpcsx_ui_settings");
+        
+	for (int i = 0; i < ehdr.e_phnum; ++i) {
+		if (phdrs[i].p_type == 0x61000002 || phdrs[i].p_type == 0x61000001) {
+			char *sce_process_param = static_cast<char*>(malloc(phdrs[i].p_filesz));
+			file.seek(phdrs[i].p_offset);
+			in.readRawData(sce_process_param, phdrs[i].p_filesz);
+			uint32_t *req_ver = reinterpret_cast<uint32_t*>(sce_process_param + 0x10);
+			QString fw_ver = QString::number(*req_ver, 16);
+			QString fwVer = QString("%1.%2").arg(fw_ver.at(0)).arg(fw_ver.mid(1, 2));
+			setting.setValue("FirmwareVersion", fwVer);
+		}
+		if (phdrs[i].p_type == 0x6fffff01) {
+			char *sce_version = static_cast<char*>(malloc(phdrs[i].p_filesz));
+			file.seek(phdrs[i].p_offset);
+			in.readRawData(sce_version, phdrs[i].p_filesz);
+			
+			size_t offset = 0;
+			while (offset < phdrs[i].p_filesz) {
+				int sz = *(sce_version + offset);
+				char name[128] = {};
+				memcpy(name, sce_version + offset + 1, sz - 0x4);
+				uint32_t *req_ver = reinterpret_cast<uint32_t*>(sce_version + offset + 1 + sz - 0x4);
+				QString fw_ver = QString::number(*req_ver, 16);
+				QString fwVer = QString("%1.%2").arg(fw_ver.at(0)).arg(fw_ver.mid(1, 2));
+				setting.setValue("FirmwareVersion", fwVer);
+			}
+		}
+	}
+
+	setting.endGroup();
+	free(phdrs);
+	file.close();
+	LoadSettings();
+	}
 }
 
 void MainWindow::on_actionBoot_Game_triggered()
