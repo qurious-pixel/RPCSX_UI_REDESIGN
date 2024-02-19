@@ -19,7 +19,8 @@ HEADERS += \
     mainwindow.h \
     param_sfo.h \
     fps_dialog.h \
-    flowlayout.h
+    flowlayout.h \
+    elf.h
 	    
 FORMS += \
     mainwindow.ui \
