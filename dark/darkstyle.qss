@@ -41,7 +41,7 @@ QToolBar * {
 
 --------------------------------------------------------------------------- */
 QWidget {
-  background-color: #19232D;
+  background-color: transparent;
   border: 0px solid #455364;
   padding: 0px;
   color: #DFE1E2;
