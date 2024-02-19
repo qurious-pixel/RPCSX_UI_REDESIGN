@@ -34,6 +34,7 @@ private:
     void LoadSettings();
     void SaveSettings();
     void SetGameTitle(QString &gamePath, QToolButton* button);
+    void GetFirmwareVersion(QString &firmwareDirectory);
     void LightMode();
     void DarkMode();
 };
