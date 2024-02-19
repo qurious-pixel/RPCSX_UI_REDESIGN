@@ -16,6 +16,8 @@ https://github.com/flightlessmango/MangoHud
 
 https://github.com/ColinDuquesnoy/QDarkStyleSheet
 
+https://github.com/dots-tb/scever_patch
+
 ## License
 
 This launcher is released under the [MIT License](LICENSE). Please refer to the license file for more information.
