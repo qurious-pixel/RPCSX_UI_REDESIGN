@@ -1,8 +1,13 @@
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets concurrent
 
-CONFIG += c++17
+CONFIG += gnu++2b
+QMAKE_CC  = clang-17
+QMAKE_CXX = clang++-17
+QMAKE_CXXFLAGS += -std=gnu++2b
+QMAKE_CFLAGS += -std=gnu++2b
+LIBS += /usr/local/lib/libcryptopp.a -lz-ng
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -11,26 +16,49 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    param_sfo.cpp \
-    fps_dialog.cpp \
-    flowlayout.cpp
+    flowlayout.cpp \
+    emulator/param_sfo.cpp \
+    emulator/fps_dialog.cpp \
+    emulator/crypto.cpp \
+    emulator/io_file.cpp \
+    emulator/psf.cpp \
+    emulator/pkg.cpp \
+    emulator/pkg_type.cpp \
+    emulator/loader.cpp
+
+    
 
 HEADERS += \
     mainwindow.h \
-    param_sfo.h \
-    fps_dialog.h \
     flowlayout.h \
-    elf.h
+    emulator/param_sfo.h \
+    emulator/fps_dialog.h \
+    emulator/elf.h \
+    emulator/crypto.h \
+    emulator/endian.h \
+    emulator/io_file.h \
+    emulator/keys.h \
+    emulator/pfs.h \
+    emulator/psf.h \
+    emulator/pkg.h \
+    emulator/pkg_type.h \
+    emulator/loader.h \
+    emulator/types.h
+    
 	    
 FORMS += \
     mainwindow.ui \
-    fps_dialog.ui
+    emulator/fps_dialog.ui
     
 RESOURCES += \
-    resources.qrc \
-    dark/darkstyle.qrc \
-    dark/darkstyle.qss
+	resources.qrc \
+	dark/darkstyle.qrc \
+	dark/darkstyle.qss
 
+INCLUDEPATH += \
+	/usr/local/include \
+	/usr/local \
+	/usr/local/include/cryptopp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

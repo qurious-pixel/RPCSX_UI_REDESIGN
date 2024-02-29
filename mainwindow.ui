@@ -224,6 +224,7 @@
    </attribute>
    <addaction name="actionBoot_Game"/>
    <addaction name="actionAdd_Games"/>
+   <addaction name="actionInstallPkg"/>
    <addaction name="actionInstall_Firmware"/>
    <addaction name="actionReset_Settings"/>
    <addaction name="actionSet_FPS"/>
@@ -304,6 +305,9 @@
    </property>
   </action>
   <action name="actionReset_Settings">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="resources.qrc">
      <normaloff>:/icons/refresh.png</normaloff>:/icons/refresh.png</iconset>
@@ -319,6 +323,16 @@
    </property>
    <property name="text">
     <string>Set FPS</string>
+   </property>
+  </action>
+  <action name="actionInstallPkg">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/grid.png</normaloff>
+     <normalon>:/icons/grid.png</normalon>:/icons/grid.png</iconset>
+   </property>
+   <property name="text">
+    <string>Install PKG</string>
    </property>
   </action>
  </widget>

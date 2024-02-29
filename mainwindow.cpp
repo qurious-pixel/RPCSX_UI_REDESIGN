@@ -1,9 +1,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "flowlayout.h"
-#include "param_sfo.h"
-#include "fps_dialog.h"
-#include "elf.h"
+#include "emulator/param_sfo.h"
+#include "emulator/fps_dialog.h"
+#include "emulator/elf.h"
+#include "emulator/io_file.h"
+#include "emulator/pkg.h"
+#include "emulator/loader.h"
 
 #include <iostream>
 #include <regex>
@@ -19,6 +22,8 @@
 #include <QXmlStreamReader>
 #include <QMenu>
 #include <QPainter>
+#include <QProgressDialog>
+#include <QtConcurrent>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -26,6 +31,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setMinimumSize(1200, 800);
+    setAcceptDrops(true);
 
 	ui->stackedWidget->addWidget(ui->gamesWindow);
 	ui->stackedWidget->addWidget(ui->noGamesWindow);
@@ -117,9 +124,20 @@ void MainWindow::LoadSettings()
     	ui->stackedWidget->addWidget(ui->noGamesWindow);
 		ui->stackedWidget->setCurrentIndex(1);
     } else {  
+		
+		QLayout* layout = ui->gamesWindow->layout();
+    	if (layout) {
+        	QLayoutItem *child;
+        	while ((child = layout->takeAt(0)) != nullptr) {
+            	delete child->widget();
+            	delete child;
+        	}
+        	delete layout;
+    	}
+		
 		ui->gamesWindow->setLayout(flowLayout);
 		ui->stackedWidget->setCurrentIndex(0);
-    	
+		  	
 		// Add buttons to the flow layout using a for each loop
     	for (qsizetype i = 0; i < directoryList.size(); ++i) {
     		QString directoryName = directoryList.at(i);
@@ -289,7 +307,7 @@ void MainWindow::on_actionBoot_Game_triggered()
     QString fpsSlider = settings.value("FPSslider").toString();
     QString hudDisplay = settings.value("HUDdisplay").toString();
 
-    QString command = QString("rm -f /dev/shm/rpcsx-* && MANGOHUD_CONFIG=\"fps_limit=%3,%4\" mangohud rpcsx-os --mount \"%1\" /system --mount \"%2\" /app0 /app0/eboot.bin").arg(firmwareDirectory, chosenGame, fpsSlider, hudDisplay);
+    QString command = QString("rm -f /dev/shm/rpcsx-* && MANGOHUD=1 MANGOHUD_CONFIG=\"fps_limit=%3,%4\" rpcsx-os --mount \"%1\" /system --mount \"%2\" /app0 /app0/eboot.bin").arg(firmwareDirectory, chosenGame, fpsSlider, hudDisplay);
        
     qDebug() << "Command to be executed:" << command;
 
@@ -439,3 +457,86 @@ void MainWindow::DarkMode()
     setting.endGroup();
 }
 
+void MainWindow::on_actionInstallPkg_triggered()
+{
+	QSettings setting("rpcsx", "rpcsx_ui_settings");
+    setting.beginGroup("rpcsx_ui_settings");
+    QString gamesDirectory = setting.value("GamesDirectory").toString();
+    setting.endGroup();
+	if(gamesDirectory == "") {
+    	on_actionAdd_Games_triggered();
+    }
+    
+    QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Install PKG Files"), QDir::currentPath(), tr("PKG File (*.PKG)"));
+    int nPkg = fileNames.size();
+    int pkgNum = 0;
+    for (const QString& file : fileNames) {
+        pkgNum++;
+        MainWindow::InstallDragDropPkg(file.toStdString(), pkgNum, nPkg);
+    }
+    //LoadSettings();
+}
+
+void MainWindow::InstallDragDropPkg(std::string file, int pkgNum, int nPkg)
+{
+	QSettings setting("rpcsx", "rpcsx_ui_settings");
+    setting.beginGroup("rpcsx_ui_settings");
+    QString gamesDirectory = setting.value("GamesDirectory").toString();
+    setting.endGroup();
+    
+    if(gamesDirectory == "") {
+    	QMessageBox::critical(this, "GAME ERROR", "Add Games Folder first",
+        QMessageBox::Ok, 0);;
+        return;
+    } 
+    
+    if (detectFileType(file) == FILETYPE_PKG) {
+        PKG pkg;
+        pkg.Open(file);
+        std::string failreason;
+        std::string extract_path = (gamesDirectory.toStdString() + "/" + std::string{pkg.GetTitleID()});
+        if (!pkg.Extract(file, extract_path, failreason)) {
+            QMessageBox::critical(this, "PKG ERROR", QString::fromStdString(failreason),
+                QMessageBox::Ok, 0);
+        } else {
+            int nfiles = pkg.GetNumberOfFiles();
+
+            QList<int> indices;
+            for (int i = 0; i < nfiles; i++) {
+                indices.append(i);
+            }
+
+            QProgressDialog dialog;
+            dialog.setWindowTitle("PKG Extraction");
+            QString extractmsg = QString("Extracting PKG %1/%2").arg(pkgNum).arg(nPkg);
+            dialog.setLabelText(extractmsg);
+
+            // Create a QFutureWatcher and connect signals and slots.
+            QFutureWatcher<void> futureWatcher;
+            QObject::connect(&futureWatcher, SIGNAL(finished()), &dialog, SLOT(reset()));
+            QObject::connect(&dialog, SIGNAL(canceled()), &futureWatcher, SLOT(cancel()));
+            QObject::connect(&futureWatcher, SIGNAL(progressRangeChanged(int, int)), &dialog,
+                             SLOT(setRange(int, int)));
+            QObject::connect(&futureWatcher, SIGNAL(progressValueChanged(int)), &dialog,
+                             SLOT(setValue(int)));
+
+            futureWatcher.setFuture(QtConcurrent::map(
+                indices, std::bind(&PKG::ExtractFiles, pkg, std::placeholders::_1)));
+
+            // Display the dialog and start the event loop.
+            dialog.exec();
+            futureWatcher.waitForFinished();
+
+            //path = m_gui_settings->GetValue(gui::settings_install_dir).toString();
+            if (pkgNum == nPkg) {
+                QMessageBox::information(this, "Extraction Finished",
+                    "Game successfully installed at " + gamesDirectory, QMessageBox::Ok,
+                    0);
+            }
+        }
+    } else {
+        QMessageBox::critical(this, "PKG ERROR", "File doesn't appear to be a valid PKG file",
+                              QMessageBox::Ok, 0);
+    }
+    LoadSettings();
+}

@@ -14,9 +14,7 @@ https://github.com/zyzalfors/ParamSFOReader
 
 https://github.com/flightlessmango/MangoHud
 
-https://github.com/ColinDuquesnoy/QDarkStyleSheet
-
-https://github.com/dots-tb/scever_patch
+https://github.com/shadps4-emu/shadPS4
 
 ## License
 
