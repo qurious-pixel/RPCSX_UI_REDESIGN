@@ -3,8 +3,8 @@ QT       += core gui
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets concurrent
 
 CONFIG += gnu++2b
-QMAKE_CC  = clang-17
-QMAKE_CXX = clang++-17
+QMAKE_CC  = g++-14
+QMAKE_CXX = g++-14
 QMAKE_CXXFLAGS += -std=gnu++2b
 QMAKE_CFLAGS += -std=gnu++2b
 LIBS += /usr/local/lib/libcryptopp.a -lz-ng
