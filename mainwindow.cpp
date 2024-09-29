@@ -307,7 +307,7 @@ void MainWindow::on_actionBoot_Game_triggered()
     QString fpsSlider = settings.value("FPSslider").toString();
     QString hudDisplay = settings.value("HUDdisplay").toString();
 
-    QString command = QString("rm -f /dev/shm/rpcsx-* && MANGOHUD=1 MANGOHUD_CONFIG=\"fps_limit=%3,%4\" rpcsx-os --mount \"%1\" /system --mount \"%2\" /app0 /app0/eboot.bin").arg(firmwareDirectory, chosenGame, fpsSlider, hudDisplay);
+    QString command = QString("MANGOHUD=1 MANGOHUD_CONFIG=\"fps_limit=%3,%4\" rpcsx-os --mount \"%1\" /system --mount \"%2\" /app0 /app0/eboot.bin").arg(firmwareDirectory, chosenGame, fpsSlider, hudDisplay);
        
     qDebug() << "Command to be executed:" << command;
 
